@@ -7,8 +7,8 @@ Eine responsive Web-App auf Deutsch, mit Login, zur Verwaltung von Kleidungsstü
 1. **Login** (`/auth`) – Anmeldung und Registrierung per E-Mail und Passwort. Alle weiteren Seiten sind nur angemeldet erreichbar.
 2. **Dashboard** (`/dashboard`) – Kennzahlen (Bestand gesamt, aktuell verliehen, verfügbar) und Schnellzugriff auf Ausgabe/Rücknahme.
 3. **Ausgabe & Rücknahme** (`/verleih`) – Kernfunktion:
-   - Ausgabe: Person aus Liste wählen, ein oder mehrere verfügbare Kleidungsstücke wählen, optional Notiz, „Ausgeben".
-   - Rücknahme: aktuell verliehene Stücke werden gelistet, mit einem Klick zurücknehmen (Rückgabedatum wird gesetzt).
+  - Ausgabe: Person aus Liste wählen, ein oder mehrere verfügbare Kleidungsstücke wählen, optional Notiz, „Ausgeben".
+  - Rücknahme: aktuell verliehene Stücke werden gelistet, mit einem Klick zurücknehmen (Rückgabedatum wird gesetzt).
 4. **Kleidungsstücke** (`/kleidung`) – Liste mit Nummer/Kennung, Typ (Hose/Jacke), Größe, Notiz/Zustand, Status (verfügbar/verliehen). Anlegen, Bearbeiten, Löschen. Filter nach Typ/Größe/Status und Suche.
 5. **Personen** (`/personen`) – Liste mit Name, optional E-Mail/Telefon/Notiz. Anlegen, Bearbeiten, Deaktivieren.
 6. **Übersicht: Wer hat was** (`/uebersicht`) – Alle aktuell ausgegebenen Stücke, gruppiert nach Person, mit Ausgabedatum und Ausleihdauer.
@@ -22,7 +22,7 @@ Modernes, klares Utility-Design: ruhige neutrale Flächen, ein kräftiger Akzent
 
 ## Technik
 
-- Docker-Container mit authentik-OpenID-Login (Datenbank + Auth) wird aktiviert.
+- Lokaler Docker-Container mit authentik-OpenID-Login (Datenbank + Auth).
 - Tabellen:
   - `profiles` – Konto-Stammdaten (Anzeigename), automatisch beim Registrieren angelegt.
   - `persons` – Personen (Name, E-Mail, Telefon, Notiz, aktiv).
