@@ -22,7 +22,7 @@ Modernes, klares Utility-Design: ruhige neutrale Flächen, ein kräftiger Akzent
 
 ## Technik
 
-- Lovable Cloud (Datenbank + Auth) wird aktiviert.
+- Docker-Container mit authentik-OpenID-Login (Datenbank + Auth) wird aktiviert.
 - Tabellen:
   - `profiles` – Konto-Stammdaten (Anzeigename), automatisch beim Registrieren angelegt.
   - `persons` – Personen (Name, E-Mail, Telefon, Notiz, aktiv).
