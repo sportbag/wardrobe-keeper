@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { translateGarmentError } from "@/lib/verleih.errors";
 import {
   garmentInputSchema,
   historyFilterSchema,
@@ -246,10 +247,3 @@ export const listLoans = createServerFn({ method: "GET" })
         note: row.note,
       }));
   });
-
-function translateGarmentError(message: string): string {
-  if (message.includes("garments_code_key")) {
-    return "Diese Kennung ist bereits vergeben.";
-  }
-  return message;
-}
