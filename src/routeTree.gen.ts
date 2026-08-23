@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticated/kleidung'
 import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
 import { Route as AuthenticatedVerleihRouteImport } from './routes/_authenticated/verleih'
 
@@ -35,6 +36,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedKleidungRoute = AuthenticatedKleidungRouteImport.update({
+  id: '/kleidung',
+  path: '/kleidung',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUebersichtRoute = AuthenticatedUebersichtRouteImport.update({
   id: '/uebersicht',
   path: '/uebersicht',
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kleidung': typeof AuthenticatedKleidungRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kleidung': typeof AuthenticatedKleidungRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
@@ -66,20 +74,23 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/kleidung': typeof AuthenticatedKleidungRoute
   '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
   '/_authenticated/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/uebersicht' | '/verleih'
+  fullPaths:
+    '/' | '/auth' | '/dashboard' | '/kleidung' | '/uebersicht' | '/verleih'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/uebersicht' | '/verleih'
+  to: '/' | '/auth' | '/dashboard' | '/kleidung' | '/uebersicht' | '/verleih'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/kleidung'
     | '/_authenticated/uebersicht'
     | '/_authenticated/verleih'
   fileRoutesById: FileRoutesById
@@ -120,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/kleidung': {
+      id: '/_authenticated/kleidung'
+      path: '/kleidung'
+      fullPath: '/kleidung'
+      preLoaderRoute: typeof AuthenticatedKleidungRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/uebersicht': {
       id: '/_authenticated/uebersicht'
       path: '/uebersicht'
@@ -139,12 +157,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedKleidungRoute: typeof AuthenticatedKleidungRoute
   AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
   AuthenticatedVerleihRoute: typeof AuthenticatedVerleihRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedKleidungRoute: AuthenticatedKleidungRoute,
   AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
   AuthenticatedVerleihRoute: AuthenticatedVerleihRoute,
 }
