@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
 import { Route as AuthenticatedVerleihRouteImport } from './routes/_authenticated/verleih'
 
 const IndexRoute = IndexRouteImport.update({
@@ -34,6 +35,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedUebersichtRoute = AuthenticatedUebersichtRouteImport.update({
+  id: '/uebersicht',
+  path: '/uebersicht',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedVerleihRoute = AuthenticatedVerleihRouteImport.update({
   id: '/verleih',
   path: '/verleih',
@@ -44,12 +50,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRoutesById {
@@ -58,19 +66,21 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
   '/_authenticated/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/verleih'
+  fullPaths: '/' | '/auth' | '/dashboard' | '/uebersicht' | '/verleih'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/verleih'
+  to: '/' | '/auth' | '/dashboard' | '/uebersicht' | '/verleih'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/uebersicht'
     | '/_authenticated/verleih'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/uebersicht': {
+      id: '/_authenticated/uebersicht'
+      path: '/uebersicht'
+      fullPath: '/uebersicht'
+      preLoaderRoute: typeof AuthenticatedUebersichtRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/verleih': {
       id: '/_authenticated/verleih'
       path: '/verleih'
@@ -122,11 +139,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
   AuthenticatedVerleihRoute: typeof AuthenticatedVerleihRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
   AuthenticatedVerleihRoute: AuthenticatedVerleihRoute,
 }
 
