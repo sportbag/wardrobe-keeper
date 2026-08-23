@@ -13,6 +13,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedHistorieRouteImport } from './routes/_authenticated/historie'
+import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticated/kleidung'
+import { Route as AuthenticatedPersonenRouteImport } from './routes/_authenticated/personen'
+import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
 import { Route as AuthenticatedVerleihRouteImport } from './routes/_authenticated/verleih'
 
 const IndexRoute = IndexRouteImport.update({
@@ -34,6 +38,26 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHistorieRoute = AuthenticatedHistorieRouteImport.update({
+  id: '/historie',
+  path: '/historie',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedKleidungRoute = AuthenticatedKleidungRouteImport.update({
+  id: '/kleidung',
+  path: '/kleidung',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPersonenRoute = AuthenticatedPersonenRouteImport.update({
+  id: '/personen',
+  path: '/personen',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUebersichtRoute = AuthenticatedUebersichtRouteImport.update({
+  id: '/uebersicht',
+  path: '/uebersicht',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedVerleihRoute = AuthenticatedVerleihRouteImport.update({
   id: '/verleih',
   path: '/verleih',
@@ -44,12 +68,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/historie': typeof AuthenticatedHistorieRoute
+  '/kleidung': typeof AuthenticatedKleidungRoute
+  '/personen': typeof AuthenticatedPersonenRoute
+  '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/historie': typeof AuthenticatedHistorieRoute
+  '/kleidung': typeof AuthenticatedKleidungRoute
+  '/personen': typeof AuthenticatedPersonenRoute
+  '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRoutesById {
@@ -58,19 +90,43 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/historie': typeof AuthenticatedHistorieRoute
+  '/_authenticated/kleidung': typeof AuthenticatedKleidungRoute
+  '/_authenticated/personen': typeof AuthenticatedPersonenRoute
+  '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
   '/_authenticated/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/verleih'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/historie'
+    | '/kleidung'
+    | '/personen'
+    | '/uebersicht'
+    | '/verleih'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/verleih'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/historie'
+    | '/kleidung'
+    | '/personen'
+    | '/uebersicht'
+    | '/verleih'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/historie'
+    | '/_authenticated/kleidung'
+    | '/_authenticated/personen'
+    | '/_authenticated/uebersicht'
     | '/_authenticated/verleih'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +166,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/historie': {
+      id: '/_authenticated/historie'
+      path: '/historie'
+      fullPath: '/historie'
+      preLoaderRoute: typeof AuthenticatedHistorieRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/kleidung': {
+      id: '/_authenticated/kleidung'
+      path: '/kleidung'
+      fullPath: '/kleidung'
+      preLoaderRoute: typeof AuthenticatedKleidungRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/personen': {
+      id: '/_authenticated/personen'
+      path: '/personen'
+      fullPath: '/personen'
+      preLoaderRoute: typeof AuthenticatedPersonenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/uebersicht': {
+      id: '/_authenticated/uebersicht'
+      path: '/uebersicht'
+      fullPath: '/uebersicht'
+      preLoaderRoute: typeof AuthenticatedUebersichtRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/verleih': {
       id: '/_authenticated/verleih'
       path: '/verleih'
@@ -122,11 +206,19 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHistorieRoute: typeof AuthenticatedHistorieRoute
+  AuthenticatedKleidungRoute: typeof AuthenticatedKleidungRoute
+  AuthenticatedPersonenRoute: typeof AuthenticatedPersonenRoute
+  AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
   AuthenticatedVerleihRoute: typeof AuthenticatedVerleihRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedHistorieRoute: AuthenticatedHistorieRoute,
+  AuthenticatedKleidungRoute: AuthenticatedKleidungRoute,
+  AuthenticatedPersonenRoute: AuthenticatedPersonenRoute,
+  AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
   AuthenticatedVerleihRoute: AuthenticatedVerleihRoute,
 }
 
