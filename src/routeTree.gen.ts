@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticated/kleidung'
+import { Route as AuthenticatedPersonenRouteImport } from './routes/_authenticated/personen'
 import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
 import { Route as AuthenticatedVerleihRouteImport } from './routes/_authenticated/verleih'
 
@@ -41,6 +42,11 @@ const AuthenticatedKleidungRoute = AuthenticatedKleidungRouteImport.update({
   path: '/kleidung',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPersonenRoute = AuthenticatedPersonenRouteImport.update({
+  id: '/personen',
+  path: '/personen',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUebersichtRoute = AuthenticatedUebersichtRouteImport.update({
   id: '/uebersicht',
   path: '/uebersicht',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
+  '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
+  '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
 }
@@ -75,15 +83,29 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/kleidung': typeof AuthenticatedKleidungRoute
+  '/_authenticated/personen': typeof AuthenticatedPersonenRoute
   '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
   '/_authenticated/verleih': typeof AuthenticatedVerleihRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/dashboard' | '/kleidung' | '/uebersicht' | '/verleih'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/kleidung'
+    | '/personen'
+    | '/uebersicht'
+    | '/verleih'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/kleidung' | '/uebersicht' | '/verleih'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/kleidung'
+    | '/personen'
+    | '/uebersicht'
+    | '/verleih'
   id:
     | '__root__'
     | '/'
@@ -91,6 +113,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/kleidung'
+    | '/_authenticated/personen'
     | '/_authenticated/uebersicht'
     | '/_authenticated/verleih'
   fileRoutesById: FileRoutesById
@@ -138,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedKleidungRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/personen': {
+      id: '/_authenticated/personen'
+      path: '/personen'
+      fullPath: '/personen'
+      preLoaderRoute: typeof AuthenticatedPersonenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/uebersicht': {
       id: '/_authenticated/uebersicht'
       path: '/uebersicht'
@@ -158,6 +188,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedKleidungRoute: typeof AuthenticatedKleidungRoute
+  AuthenticatedPersonenRoute: typeof AuthenticatedPersonenRoute
   AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
   AuthenticatedVerleihRoute: typeof AuthenticatedVerleihRoute
 }
@@ -165,6 +196,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedKleidungRoute: AuthenticatedKleidungRoute,
+  AuthenticatedPersonenRoute: AuthenticatedPersonenRoute,
   AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
   AuthenticatedVerleihRoute: AuthenticatedVerleihRoute,
 }
