@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedHistorieRouteImport } from './routes/_authenticated/historie'
 import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticated/kleidung'
 import { Route as AuthenticatedPersonenRouteImport } from './routes/_authenticated/personen'
 import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
@@ -35,6 +36,11 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHistorieRoute = AuthenticatedHistorieRouteImport.update({
+  id: '/historie',
+  path: '/historie',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedKleidungRoute = AuthenticatedKleidungRouteImport.update({
@@ -62,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/historie': typeof AuthenticatedHistorieRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
   '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/historie': typeof AuthenticatedHistorieRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
   '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/historie': typeof AuthenticatedHistorieRoute
   '/_authenticated/kleidung': typeof AuthenticatedKleidungRoute
   '/_authenticated/personen': typeof AuthenticatedPersonenRoute
   '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/historie'
     | '/kleidung'
     | '/personen'
     | '/uebersicht'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/historie'
     | '/kleidung'
     | '/personen'
     | '/uebersicht'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/historie'
     | '/_authenticated/kleidung'
     | '/_authenticated/personen'
     | '/_authenticated/uebersicht'
@@ -154,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/historie': {
+      id: '/_authenticated/historie'
+      path: '/historie'
+      fullPath: '/historie'
+      preLoaderRoute: typeof AuthenticatedHistorieRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/kleidung': {
       id: '/_authenticated/kleidung'
       path: '/kleidung'
@@ -187,6 +206,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHistorieRoute: typeof AuthenticatedHistorieRoute
   AuthenticatedKleidungRoute: typeof AuthenticatedKleidungRoute
   AuthenticatedPersonenRoute: typeof AuthenticatedPersonenRoute
   AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
@@ -195,6 +215,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedHistorieRoute: AuthenticatedHistorieRoute,
   AuthenticatedKleidungRoute: AuthenticatedKleidungRoute,
   AuthenticatedPersonenRoute: AuthenticatedPersonenRoute,
   AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
