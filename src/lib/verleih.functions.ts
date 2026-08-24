@@ -16,6 +16,10 @@ export type PersonDTO = {
   email: string | null;
   phone: string | null;
   note: string | null;
+  birth_date: string | null;
+  guardian_name: string | null;
+  membership_start: string | null;
+  membership_end: string | null;
   is_active: boolean;
   open_loans: number;
 };
