@@ -100,31 +100,43 @@ export type Database = {
       }
       persons: {
         Row: {
+          birth_date: string | null
           created_at: string
           email: string | null
           full_name: string
+          guardian_name: string | null
           id: string
           is_active: boolean
+          membership_end: string | null
+          membership_start: string | null
           note: string | null
           phone: string | null
           updated_at: string
         }
         Insert: {
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           full_name: string
+          guardian_name?: string | null
           id?: string
           is_active?: boolean
+          membership_end?: string | null
+          membership_start?: string | null
           note?: string | null
           phone?: string | null
           updated_at?: string
         }
         Update: {
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
+          guardian_name?: string | null
           id?: string
           is_active?: boolean
+          membership_end?: string | null
+          membership_start?: string | null
           note?: string | null
           phone?: string | null
           updated_at?: string

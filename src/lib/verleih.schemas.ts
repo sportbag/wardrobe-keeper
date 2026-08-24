@@ -3,12 +3,23 @@ import { z } from "zod";
 export const garmentTypeSchema = z.enum(["hose", "jacke"]);
 export type GarmentType = z.infer<typeof garmentTypeSchema>;
 
+const dateField = z
+  .string()
+  .trim()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Ungültiges Datum")
+  .optional()
+  .or(z.literal(""));
+
 export const personInputSchema = z.object({
   id: z.string().uuid().optional(),
   full_name: z.string().trim().min(1, "Name ist erforderlich"),
   email: z.string().trim().email("Ungültige E-Mail").optional().or(z.literal("")),
   phone: z.string().trim().optional().or(z.literal("")),
   note: z.string().trim().optional().or(z.literal("")),
+  birth_date: dateField,
+  guardian_name: z.string().trim().optional().or(z.literal("")),
+  membership_start: dateField,
+  membership_end: dateField,
   is_active: z.boolean().default(true),
 });
 export type PersonInput = z.infer<typeof personInputSchema>;

@@ -16,6 +16,10 @@ export type PersonDTO = {
   email: string | null;
   phone: string | null;
   note: string | null;
+  birth_date: string | null;
+  guardian_name: string | null;
+  membership_start: string | null;
+  membership_end: string | null;
   is_active: boolean;
   open_loans: number;
 };
@@ -53,7 +57,9 @@ export const listPersons = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<PersonDTO[]> => {
     const { data, error } = await context.supabase
       .from("persons")
-      .select("id, full_name, email, phone, note, is_active")
+      .select(
+        "id, full_name, email, phone, note, birth_date, guardian_name, membership_start, membership_end, is_active",
+      )
       .order("full_name", { ascending: true });
     if (error) throw new Error(error.message);
 
