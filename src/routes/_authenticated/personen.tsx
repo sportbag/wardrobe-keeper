@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { formatDate } from "@/lib/format";
 import { personsQueryOptions } from "@/lib/verleih.queries";
-import { deletePerson, savePerson, type PersonDTO } from "@/lib/verleih.functions";
+import { deletePerson, importPersons, savePerson, type PersonDTO } from "@/lib/verleih.functions";
+import { PersonCsvImportDialog } from "@/components/PersonCsvImportDialog";
 
 export const Route = createFileRoute("/_authenticated/personen")({
   head: () => ({
