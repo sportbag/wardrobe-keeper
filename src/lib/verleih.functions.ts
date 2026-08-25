@@ -137,7 +137,17 @@ export const importPersons = createServerFn({ method: "POST" })
 
     const known = new Set((existing ?? []).map((p) => p.full_name.trim().toLowerCase()));
     const skipped: string[] = [];
-    const payload: Array<Record<string, string | boolean | null>> = [];
+    const payload: Array<{
+      full_name: string;
+      email: string | null;
+      phone: string | null;
+      note: string | null;
+      birth_date: string | null;
+      guardian_name: string | null;
+      membership_start: string | null;
+      membership_end: string | null;
+      is_active: boolean;
+    }> = [];
 
     for (const row of data.rows) {
       const key = row.full_name.trim().toLowerCase();
