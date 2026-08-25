@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { formatDate } from "@/lib/format";
 import { personsQueryOptions } from "@/lib/verleih.queries";
-import { deletePerson, importPersons, savePerson, type PersonDTO } from "@/lib/verleih.functions";
+import { deletePerson, savePerson, type PersonDTO } from "@/lib/verleih.functions";
 import { PersonCsvImportDialog } from "@/components/PersonCsvImportDialog";
 
 export const Route = createFileRoute("/_authenticated/personen")({
@@ -151,15 +151,18 @@ function PersonenPage() {
       title="Personen"
       description="Wer darf Kleidung ausleihen"
       actions={
-        <Button
-          size="sm"
-          onClick={() => {
-            setForm(EMPTY);
-            setOpen(true);
-          }}
-        >
-          <Plus className="mr-1 h-4 w-4" /> Neu
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <PersonCsvImportDialog onImported={invalidate} />
+          <Button
+            size="sm"
+            onClick={() => {
+              setForm(EMPTY);
+              setOpen(true);
+            }}
+          >
+            <Plus className="mr-1 h-4 w-4" /> Neu
+          </Button>
+        </div>
       }
     >
       <Input
