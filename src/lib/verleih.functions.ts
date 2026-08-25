@@ -126,6 +126,47 @@ export const deletePerson = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const importPersons = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => importPersonsSchema.parse(input))
+  .handler(async ({ data, context }): Promise<{ inserted: number; skipped: string[] }> => {
+    const { data: existing, error: existingError } = await context.supabase
+      .from("persons")
+      .select("full_name");
+    if (existingError) throw new Error(existingError.message);
+
+    const known = new Set((existing ?? []).map((p) => p.full_name.trim().toLowerCase()));
+    const skipped: string[] = [];
+    const payload: Array<Record<string, string | boolean | null>> = [];
+
+    for (const row of data.rows) {
+      const key = row.full_name.trim().toLowerCase();
+      if (known.has(key)) {
+        skipped.push(row.full_name);
+        continue;
+      }
+      known.add(key);
+      payload.push({
+        full_name: row.full_name,
+        email: row.email ? row.email : null,
+        phone: row.phone ? row.phone : null,
+        note: row.note ? row.note : null,
+        birth_date: row.birth_date ? row.birth_date : null,
+        guardian_name: row.guardian_name ? row.guardian_name : null,
+        membership_start: row.membership_start ? row.membership_start : null,
+        membership_end: row.membership_end ? row.membership_end : null,
+        is_active: row.is_active,
+      });
+    }
+
+    if (payload.length > 0) {
+      const { error } = await context.supabase.from("persons").insert(payload);
+      if (error) throw new Error(error.message);
+    }
+
+    return { inserted: payload.length, skipped };
+  });
+
 export const listGarments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<GarmentDTO[]> => {
