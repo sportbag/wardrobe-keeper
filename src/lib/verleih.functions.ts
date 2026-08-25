@@ -5,6 +5,7 @@ import {
   garmentInputSchema,
   historyFilterSchema,
   idSchema,
+  importPersonsSchema,
   issueLoanSchema,
   personInputSchema,
   type GarmentType,
@@ -123,6 +124,57 @@ export const deletePerson = createServerFn({ method: "POST" })
     const { error } = await context.supabase.from("persons").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+export const importPersons = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => importPersonsSchema.parse(input))
+  .handler(async ({ data, context }): Promise<{ inserted: number; skipped: string[] }> => {
+    const { data: existing, error: existingError } = await context.supabase
+      .from("persons")
+      .select("full_name");
+    if (existingError) throw new Error(existingError.message);
+
+    const known = new Set((existing ?? []).map((p) => p.full_name.trim().toLowerCase()));
+    const skipped: string[] = [];
+    const payload: Array<{
+      full_name: string;
+      email: string | null;
+      phone: string | null;
+      note: string | null;
+      birth_date: string | null;
+      guardian_name: string | null;
+      membership_start: string | null;
+      membership_end: string | null;
+      is_active: boolean;
+    }> = [];
+
+    for (const row of data.rows) {
+      const key = row.full_name.trim().toLowerCase();
+      if (known.has(key)) {
+        skipped.push(row.full_name);
+        continue;
+      }
+      known.add(key);
+      payload.push({
+        full_name: row.full_name,
+        email: row.email ? row.email : null,
+        phone: row.phone ? row.phone : null,
+        note: row.note ? row.note : null,
+        birth_date: row.birth_date ? row.birth_date : null,
+        guardian_name: row.guardian_name ? row.guardian_name : null,
+        membership_start: row.membership_start ? row.membership_start : null,
+        membership_end: row.membership_end ? row.membership_end : null,
+        is_active: row.is_active,
+      });
+    }
+
+    if (payload.length > 0) {
+      const { error } = await context.supabase.from("persons").insert(payload);
+      if (error) throw new Error(error.message);
+    }
+
+    return { inserted: payload.length, skipped };
   });
 
 export const listGarments = createServerFn({ method: "GET" })

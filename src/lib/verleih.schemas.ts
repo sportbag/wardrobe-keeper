@@ -42,6 +42,13 @@ export const issueLoanSchema = z.object({
 
 export const idSchema = z.object({ id: z.string().uuid() });
 
+export const importPersonsSchema = z.object({
+  rows: z
+    .array(personInputSchema.omit({ id: true }))
+    .min(1, "Keine Datensätze gefunden")
+    .max(500, "Maximal 500 Datensätze pro Import"),
+});
+
 export const historyFilterSchema = z.object({
   person_id: z.string().uuid().optional(),
   garment_id: z.string().uuid().optional(),

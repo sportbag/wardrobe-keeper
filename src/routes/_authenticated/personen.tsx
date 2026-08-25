@@ -22,6 +22,7 @@ import {
 import { formatDate } from "@/lib/format";
 import { personsQueryOptions } from "@/lib/verleih.queries";
 import { deletePerson, savePerson, type PersonDTO } from "@/lib/verleih.functions";
+import { PersonCsvImportDialog } from "@/components/PersonCsvImportDialog";
 
 export const Route = createFileRoute("/_authenticated/personen")({
   head: () => ({
@@ -150,15 +151,18 @@ function PersonenPage() {
       title="Personen"
       description="Wer darf Kleidung ausleihen"
       actions={
-        <Button
-          size="sm"
-          onClick={() => {
-            setForm(EMPTY);
-            setOpen(true);
-          }}
-        >
-          <Plus className="mr-1 h-4 w-4" /> Neu
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <PersonCsvImportDialog onImported={invalidate} />
+          <Button
+            size="sm"
+            onClick={() => {
+              setForm(EMPTY);
+              setOpen(true);
+            }}
+          >
+            <Plus className="mr-1 h-4 w-4" /> Neu
+          </Button>
+        </div>
       }
     >
       <Input
