@@ -99,6 +99,10 @@ function PersonenPage() {
           email: form.email.trim(),
           phone: form.phone.trim(),
           note: form.note.trim(),
+          birth_date: form.birth_date,
+          guardian_name: form.guardian_name.trim(),
+          membership_start: form.membership_start,
+          membership_end: form.membership_end,
           is_active: form.is_active,
         },
       }),
@@ -131,6 +135,10 @@ function PersonenPage() {
       email: p.email ?? "",
       phone: p.phone ?? "",
       note: p.note ?? "",
+      birth_date: p.birth_date ?? "",
+      guardian_name: p.guardian_name ?? "",
+      membership_start: p.membership_start ?? "",
+      membership_end: p.membership_end ?? "",
       is_active: p.is_active,
     });
     setOpen(true);
