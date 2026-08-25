@@ -5,6 +5,7 @@ import {
   garmentInputSchema,
   historyFilterSchema,
   idSchema,
+  importPersonsSchema,
   issueLoanSchema,
   personInputSchema,
   type GarmentType,
