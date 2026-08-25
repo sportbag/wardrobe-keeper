@@ -50,10 +50,24 @@ type FormState = {
   email: string;
   phone: string;
   note: string;
+  birth_date: string;
+  guardian_name: string;
+  membership_start: string;
+  membership_end: string;
   is_active: boolean;
 };
 
-const EMPTY: FormState = { full_name: "", email: "", phone: "", note: "", is_active: true };
+const EMPTY: FormState = {
+  full_name: "",
+  email: "",
+  phone: "",
+  note: "",
+  birth_date: "",
+  guardian_name: "",
+  membership_start: "",
+  membership_end: "",
+  is_active: true,
+};
 
 function PersonenPage() {
   const queryClient = useQueryClient();
