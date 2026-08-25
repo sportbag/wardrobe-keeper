@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { formatDate } from "@/lib/format";
 import { personsQueryOptions } from "@/lib/verleih.queries";
 import { deletePerson, savePerson, type PersonDTO } from "@/lib/verleih.functions";
 
@@ -50,10 +51,24 @@ type FormState = {
   email: string;
   phone: string;
   note: string;
+  birth_date: string;
+  guardian_name: string;
+  membership_start: string;
+  membership_end: string;
   is_active: boolean;
 };
 
-const EMPTY: FormState = { full_name: "", email: "", phone: "", note: "", is_active: true };
+const EMPTY: FormState = {
+  full_name: "",
+  email: "",
+  phone: "",
+  note: "",
+  birth_date: "",
+  guardian_name: "",
+  membership_start: "",
+  membership_end: "",
+  is_active: true,
+};
 
 function PersonenPage() {
   const queryClient = useQueryClient();
@@ -85,6 +100,10 @@ function PersonenPage() {
           email: form.email.trim(),
           phone: form.phone.trim(),
           note: form.note.trim(),
+          birth_date: form.birth_date,
+          guardian_name: form.guardian_name.trim(),
+          membership_start: form.membership_start,
+          membership_end: form.membership_end,
           is_active: form.is_active,
         },
       }),
@@ -117,6 +136,10 @@ function PersonenPage() {
       email: p.email ?? "",
       phone: p.phone ?? "",
       note: p.note ?? "",
+      birth_date: p.birth_date ?? "",
+      guardian_name: p.guardian_name ?? "",
+      membership_start: p.membership_start ?? "",
+      membership_end: p.membership_end ?? "",
       is_active: p.is_active,
     });
     setOpen(true);
@@ -160,6 +183,28 @@ function PersonenPage() {
                   {p.is_active ? `${p.open_loans} offen` : "inaktiv"}
                 </Badge>
               </div>
+              <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {p.birth_date ? (
+                  <>
+                    <dt>Geburtsdatum</dt>
+                    <dd className="text-foreground">{formatDate(p.birth_date)}</dd>
+                  </>
+                ) : null}
+                {p.guardian_name ? (
+                  <>
+                    <dt>Erziehungsberechtigt</dt>
+                    <dd className="text-foreground">{p.guardian_name}</dd>
+                  </>
+                ) : null}
+                {p.membership_start || p.membership_end ? (
+                  <>
+                    <dt>Mitgliedschaft</dt>
+                    <dd className="text-foreground">
+                      {formatDate(p.membership_start)} – {formatDate(p.membership_end)}
+                    </dd>
+                  </>
+                ) : null}
+              </dl>
               {p.note ? <p className="text-xs text-muted-foreground">{p.note}</p> : null}
               <div className="flex justify-end gap-1 pt-1">
                 <Button variant="ghost" size="icon" aria-label="Bearbeiten" onClick={() => startEdit(p)}>
@@ -213,6 +258,45 @@ function PersonenPage() {
                   id="phone"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="birth">Geburtsdatum</Label>
+                <Input
+                  id="birth"
+                  type="date"
+                  value={form.birth_date}
+                  onChange={(e) => setForm({ ...form, birth_date: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guardian">Erziehungsberechtigter</Label>
+                <Input
+                  id="guardian"
+                  value={form.guardian_name}
+                  onChange={(e) => setForm({ ...form, guardian_name: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="mstart">Mitgliedschaft von</Label>
+                <Input
+                  id="mstart"
+                  type="date"
+                  value={form.membership_start}
+                  onChange={(e) => setForm({ ...form, membership_start: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mend">Mitgliedschaft bis</Label>
+                <Input
+                  id="mend"
+                  type="date"
+                  value={form.membership_end}
+                  onChange={(e) => setForm({ ...form, membership_end: e.target.value })}
                 />
               </div>
             </div>

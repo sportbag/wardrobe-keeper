@@ -86,6 +86,10 @@ export const savePerson = createServerFn({ method: "POST" })
       email: data.email ? data.email : null,
       phone: data.phone ? data.phone : null,
       note: data.note ? data.note : null,
+      birth_date: data.birth_date ? data.birth_date : null,
+      guardian_name: data.guardian_name ? data.guardian_name : null,
+      membership_start: data.membership_start ? data.membership_start : null,
+      membership_end: data.membership_end ? data.membership_end : null,
       is_active: data.is_active,
     };
     if (data.id) {
