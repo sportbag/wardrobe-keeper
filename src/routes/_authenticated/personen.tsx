@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { formatDate } from "@/lib/format";
 import { personsQueryOptions } from "@/lib/verleih.queries";
 import { deletePerson, savePerson, type PersonDTO } from "@/lib/verleih.functions";
 
