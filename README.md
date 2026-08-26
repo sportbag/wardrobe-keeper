@@ -1,14 +1,16 @@
-# Welcome to your Lovable project
+# Wardrobe Keeper
+
+Baue mir bitte eine moderne Webanwendung, die ein responsives Design aufweist, mit welcher Kleidungsstücke für den Verleih verwaltet werden können - insbesondere Hosen und Jacken. Es soll einfach möglich sein die Bereitstellung bzw. Rücknahme der Kleidungsstücke an Personen (über eine Liste vorauszuwählen) zu erfassen und so in einer Historie zu erfassen. Über die Historie bzw. die erfassten Daten soll es möglich sein in einer Übersicht festzustellen, wer welches Kleidungsstück aktuell besitzt. Zudem soll in einer weiteren Übersicht feststellbar sein, wann welches Kleidungsstück von wem ausgeliehen war/ist.
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/28c83133-db38-485c-90e0-25ddf1b54c31).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +22,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
