@@ -18,6 +18,7 @@ import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPersonenRouteImport } from './routes/_authenticated/personen'
 import { Route as AuthenticatedUebersichtRouteImport } from './routes/_authenticated/uebersicht'
 import { Route as AuthenticatedVerleihRouteImport } from './routes/_authenticated/verleih'
+import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,6 +64,12 @@ const AuthenticatedVerleihRoute = AuthenticatedVerleihRouteImport.update({
   path: '/verleih',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPersonPersonIdRoute =
+  AuthenticatedPersonPersonIdRouteImport.update({
+    id: '/person/$personId',
+    path: '/person/$personId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
+  '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/personen': typeof AuthenticatedPersonenRoute
   '/uebersicht': typeof AuthenticatedUebersichtRoute
   '/verleih': typeof AuthenticatedVerleihRoute
+  '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/_authenticated/personen': typeof AuthenticatedPersonenRoute
   '/_authenticated/uebersicht': typeof AuthenticatedUebersichtRoute
   '/_authenticated/verleih': typeof AuthenticatedVerleihRoute
+  '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/personen'
     | '/uebersicht'
     | '/verleih'
+    | '/person/$personId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/personen'
     | '/uebersicht'
     | '/verleih'
+    | '/person/$personId'
   id:
     | '__root__'
     | '/'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/personen'
     | '/_authenticated/uebersicht'
     | '/_authenticated/verleih'
+    | '/_authenticated/person/$personId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVerleihRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/person/$personId': {
+      id: '/_authenticated/person/$personId'
+      path: '/person/$personId'
+      fullPath: '/person/$personId'
+      preLoaderRoute: typeof AuthenticatedPersonPersonIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -211,6 +231,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPersonenRoute: typeof AuthenticatedPersonenRoute
   AuthenticatedUebersichtRoute: typeof AuthenticatedUebersichtRoute
   AuthenticatedVerleihRoute: typeof AuthenticatedVerleihRoute
+  AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -220,6 +241,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPersonenRoute: AuthenticatedPersonenRoute,
   AuthenticatedUebersichtRoute: AuthenticatedUebersichtRoute,
   AuthenticatedVerleihRoute: AuthenticatedVerleihRoute,
+  AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
