@@ -20,9 +20,25 @@ export const personInputSchema = z.object({
   guardian_name: z.string().trim().optional().or(z.literal("")),
   membership_start: dateField,
   membership_end: dateField,
+  annual_fee: z
+    .string()
+    .trim()
+    .regex(/^\d+([.,]\d{1,2})?$/, "Ungültiger Betrag")
+    .optional()
+    .or(z.literal("")),
   is_active: z.boolean().default(true),
 });
 export type PersonInput = z.infer<typeof personInputSchema>;
+
+export const feePaymentSchema = z.object({
+  id: z.string().uuid().optional(),
+  person_id: z.string().uuid(),
+  year: z.number().int().min(2000).max(2100),
+  amount: z.number().min(0),
+  paid_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Ungültiges Datum"),
+  note: z.string().trim().optional().or(z.literal("")),
+});
+export type FeePaymentInput = z.infer<typeof feePaymentSchema>;
 
 export const garmentInputSchema = z.object({
   id: z.string().uuid().optional(),

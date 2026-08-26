@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,7 @@ type FormState = {
   guardian_name: string;
   membership_start: string;
   membership_end: string;
+  annual_fee: string;
   is_active: boolean;
 };
 
@@ -68,6 +69,7 @@ const EMPTY: FormState = {
   guardian_name: "",
   membership_start: "",
   membership_end: "",
+  annual_fee: "",
   is_active: true,
 };
 
@@ -105,6 +107,7 @@ function PersonenPage() {
           guardian_name: form.guardian_name.trim(),
           membership_start: form.membership_start,
           membership_end: form.membership_end,
+          annual_fee: form.annual_fee.trim(),
           is_active: form.is_active,
         },
       }),
@@ -141,6 +144,7 @@ function PersonenPage() {
       guardian_name: p.guardian_name ?? "",
       membership_start: p.membership_start ?? "",
       membership_end: p.membership_end ?? "",
+      annual_fee: p.annual_fee !== null ? String(p.annual_fee) : "",
       is_active: p.is_active,
     });
     setOpen(true);
@@ -200,6 +204,14 @@ function PersonenPage() {
                     <dd className="text-foreground">{p.guardian_name}</dd>
                   </>
                 ) : null}
+                {p.annual_fee !== null ? (
+                  <>
+                    <dt>Leihgebühr / Jahr</dt>
+                    <dd className="text-foreground">
+                      {p.annual_fee.toLocaleString("de-DE", { style: "currency", currency: "EUR" })}
+                    </dd>
+                  </>
+                ) : null}
                 {p.membership_start || p.membership_end ? (
                   <>
                     <dt>Mitgliedschaft</dt>
@@ -210,7 +222,13 @@ function PersonenPage() {
                 ) : null}
               </dl>
               {p.note ? <p className="text-xs text-muted-foreground">{p.note}</p> : null}
-              <div className="flex justify-end gap-1 pt-1">
+              <div className="flex items-center justify-between gap-1 pt-1">
+                <Button variant="link" size="sm" className="px-0" asChild>
+                  <Link to="/person/$personId" params={{ personId: p.id }}>
+                    Details <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <div className="flex gap-1">
                 <Button variant="ghost" size="icon" aria-label="Bearbeiten" onClick={() => startEdit(p)}>
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -222,6 +240,7 @@ function PersonenPage() {
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -303,6 +322,16 @@ function PersonenPage() {
                   onChange={(e) => setForm({ ...form, membership_end: e.target.value })}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fee">Jährliche Leihgebühr (EUR)</Label>
+              <Input
+                id="fee"
+                inputMode="decimal"
+                placeholder="z. B. 25,00"
+                value={form.annual_fee}
+                onChange={(e) => setForm({ ...form, annual_fee: e.target.value })}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="pnote">Notiz</Label>
