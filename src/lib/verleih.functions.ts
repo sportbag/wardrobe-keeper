@@ -5,6 +5,7 @@ import {
   garmentInputSchema,
   historyFilterSchema,
   idSchema,
+  feePaymentSchema,
   importPersonsSchema,
   issueLoanSchema,
   personInputSchema,
@@ -21,6 +22,7 @@ export type PersonDTO = {
   guardian_name: string | null;
   membership_start: string | null;
   membership_end: string | null;
+  annual_fee: number | null;
   is_active: boolean;
   open_loans: number;
 };
@@ -59,7 +61,7 @@ export const listPersons = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("persons")
       .select(
-        "id, full_name, email, phone, note, birth_date, guardian_name, membership_start, membership_end, is_active",
+        "id, full_name, email, phone, note, birth_date, guardian_name, membership_start, membership_end, annual_fee, is_active",
       )
       .order("full_name", { ascending: true });
     if (error) throw new Error(error.message);
@@ -91,6 +93,7 @@ export const savePerson = createServerFn({ method: "POST" })
       guardian_name: data.guardian_name ? data.guardian_name : null,
       membership_start: data.membership_start ? data.membership_start : null,
       membership_end: data.membership_end ? data.membership_end : null,
+      annual_fee: data.annual_fee ? Number(data.annual_fee.replace(",", ".")) : null,
       is_active: data.is_active,
     };
     if (data.id) {
