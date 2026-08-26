@@ -312,3 +312,104 @@ export const listLoans = createServerFn({ method: "GET" })
         note: row.note,
       }));
   });
+
+export type FeePaymentDTO = {
+  id: string;
+  person_id: string;
+  year: number;
+  amount: number;
+  paid_on: string;
+  note: string | null;
+};
+
+export type PersonDetailDTO = {
+  person: PersonDTO;
+  payments: FeePaymentDTO[];
+  loans: LoanDTO[];
+};
+
+export const getPersonDetail = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => idSchema.parse(input))
+  .handler(async ({ data, context }): Promise<PersonDetailDTO> => {
+    const { data: person, error } = await context.supabase
+      .from("persons")
+      .select(
+        "id, full_name, email, phone, note, birth_date, guardian_name, membership_start, membership_end, annual_fee, is_active",
+      )
+      .eq("id", data.id)
+      .single();
+    if (error) throw new Error(error.message);
+
+    const { data: loanRows, error: loanError } = await context.supabase
+      .from("loans")
+      .select("id, garment_id, person_id, issued_at, returned_at, note, garments(code, type, size)")
+      .eq("person_id", data.id)
+      .order("issued_at", { ascending: false });
+    if (loanError) throw new Error(loanError.message);
+
+    const { data: paymentRows, error: payError } = await context.supabase
+      .from("fee_payments")
+      .select("id, person_id, year, amount, paid_on, note")
+      .eq("person_id", data.id)
+      .order("year", { ascending: false });
+    if (payError) throw new Error(payError.message);
+
+    const loans: LoanDTO[] = (loanRows ?? []).map((row) => ({
+      id: row.id,
+      garment_id: row.garment_id,
+      garment_code: row.garments?.code ?? "—",
+      garment_type: (row.garments?.type ?? "hose") as GarmentType,
+      garment_size: row.garments?.size ?? null,
+      person_id: row.person_id,
+      person_name: person.full_name,
+      issued_at: row.issued_at,
+      returned_at: row.returned_at,
+      note: row.note,
+    }));
+
+    return {
+      person: {
+        ...person,
+        annual_fee: person.annual_fee === null ? null : Number(person.annual_fee),
+        open_loans: loans.filter((l) => !l.returned_at).length,
+      },
+      payments: (paymentRows ?? []).map((p) => ({ ...p, amount: Number(p.amount) })),
+      loans,
+    };
+  });
+
+export const saveFeePayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => feePaymentSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const payload = {
+      person_id: data.person_id,
+      year: data.year,
+      amount: data.amount,
+      paid_on: data.paid_on,
+      note: data.note ? data.note : null,
+      created_by: context.userId,
+    };
+    if (data.id) {
+      const { error } = await context.supabase.from("fee_payments").update(payload).eq("id", data.id);
+      if (error) throw new Error(error.message);
+      return { id: data.id };
+    }
+    const { data: inserted, error } = await context.supabase
+      .from("fee_payments")
+      .upsert(payload, { onConflict: "person_id,year" })
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+    return { id: inserted.id };
+  });
+
+export const deleteFeePayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => idSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("fee_payments").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
