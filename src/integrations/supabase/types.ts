@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      fee_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string | null
+          paid_on: string
+          person_id: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string | null
+          paid_on?: string
+          person_id: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string | null
+          paid_on?: string
+          person_id?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fee_payments_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "persons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       garments: {
         Row: {
           code: string
@@ -100,6 +144,7 @@ export type Database = {
       }
       persons: {
         Row: {
+          annual_fee: number | null
           birth_date: string | null
           created_at: string
           email: string | null
@@ -114,6 +159,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          annual_fee?: number | null
           birth_date?: string | null
           created_at?: string
           email?: string | null
@@ -128,6 +174,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          annual_fee?: number | null
           birth_date?: string | null
           created_at?: string
           email?: string | null
