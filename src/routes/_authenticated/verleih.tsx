@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { PaymentsPanel } from "@/components/PaymentsPanel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,7 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { garmentsQueryOptions, personsQueryOptions } from "@/lib/verleih.queries";
+import {
+  feePaymentsQueryOptions,
+  garmentsQueryOptions,
+  personsQueryOptions,
+} from "@/lib/verleih.queries";
 import { issueLoans, returnLoan } from "@/lib/verleih.functions";
 import { formatDate, formatDuration } from "@/lib/format";
 import { GARMENT_TYPE_LABEL } from "@/lib/verleih.schemas";
@@ -25,15 +30,16 @@ import { GARMENT_TYPE_LABEL } from "@/lib/verleih.schemas";
 export const Route = createFileRoute("/_authenticated/verleih")({
   head: () => ({
     meta: [
-      { title: "Ausgabe & Rücknahme – Kleiderverleih" },
+      { title: "Erfassung – Kleiderverleih" },
       {
         name: "description",
-        content: "Hosen und Jacken an Personen ausgeben und Rückgaben mit einem Klick erfassen.",
+        content:
+          "Ausgaben, Rücknahmen und jährliche Leihgebühren zentral erfassen.",
       },
-      { property: "og:title", content: "Ausgabe & Rücknahme – Kleiderverleih" },
+      { property: "og:title", content: "Erfassung – Kleiderverleih" },
       {
         property: "og:description",
-        content: "Ausleihen erfassen und Rückgaben dokumentieren.",
+        content: "Ausleihen, Rückgaben und Zahlungen dokumentieren.",
       },
     ],
   }),
@@ -41,6 +47,7 @@ export const Route = createFileRoute("/_authenticated/verleih")({
     Promise.all([
       context.queryClient.ensureQueryData(garmentsQueryOptions()),
       context.queryClient.ensureQueryData(personsQueryOptions()),
+      context.queryClient.ensureQueryData(feePaymentsQueryOptions()),
     ]),
   errorComponent: ({ error }) => (
     <div className="p-6 text-sm text-destructive" role="alert">
@@ -115,11 +122,15 @@ function VerleihPage() {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
   return (
-    <AppShell title="Ausgabe & Rücknahme" description="Kleidungsstücke ausgeben oder zurücknehmen">
+    <AppShell
+      title="Erfassung"
+      description="Ausgabe, Rücknahme und Zahlungen an einer Stelle"
+    >
       <Tabs defaultValue="ausgabe">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-xl grid-cols-3">
           <TabsTrigger value="ausgabe">Ausgabe</TabsTrigger>
           <TabsTrigger value="ruecknahme">Rücknahme ({lent.length})</TabsTrigger>
+          <TabsTrigger value="zahlungen">Zahlungen</TabsTrigger>
         </TabsList>
 
         <TabsContent value="ausgabe" className="mt-4 space-y-4">
@@ -236,6 +247,10 @@ function VerleihPage() {
               </Card>
             ))
           )}
+        </TabsContent>
+
+        <TabsContent value="zahlungen" className="mt-4">
+          <PaymentsPanel />
         </TabsContent>
       </Tabs>
     </AppShell>
