@@ -79,3 +79,13 @@ export const GARMENT_TYPE_LABEL: Record<GarmentType, string> = {
   hose: "Hose",
   jacke: "Jacke",
 };
+
+export const loanUpdateSchema = z.object({
+  id: z.string().uuid(),
+  person_id: z.string().uuid(),
+  garment_id: z.string().uuid(),
+  issued_at: z.string().min(1, "Ausgabedatum ist erforderlich"),
+  returned_at: z.string().optional().or(z.literal("")),
+  note: z.string().trim().optional().or(z.literal("")),
+});
+export type LoanUpdateInput = z.infer<typeof loanUpdateSchema>;

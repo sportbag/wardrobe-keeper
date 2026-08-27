@@ -413,3 +413,82 @@ export const deleteFeePayment = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export type FeePaymentRowDTO = FeePaymentDTO & { person_name: string };
+
+export const listFeePayments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<FeePaymentRowDTO[]> => {
+    const { data, error } = await context.supabase
+      .from("fee_payments")
+      .select("id, person_id, year, amount, paid_on, note, persons(full_name)")
+      .order("year", { ascending: false })
+      .order("paid_on", { ascending: false })
+      .limit(500);
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((row) => ({
+      id: row.id,
+      person_id: row.person_id,
+      year: row.year,
+      amount: Number(row.amount),
+      paid_on: row.paid_on,
+      note: row.note,
+      person_name: row.persons?.full_name ?? "Unbekannt",
+    }));
+  });
+
+export const getMyRole = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ isAdmin: boolean }> => {
+    const { data, error } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { isAdmin: (data ?? []).some((r) => r.role === "admin") };
+  });
+
+async function assertAdmin(context: { supabase: SupabaseLike; userId: string }) {
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Nur Admins dürfen Buchungen ändern.");
+}
+
+export const updateLoan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => loanUpdateSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { error } = await context.supabase
+      .from("loans")
+      .update({
+        person_id: data.person_id,
+        garment_id: data.garment_id,
+        issued_at: new Date(data.issued_at).toISOString(),
+        returned_at: data.returned_at ? new Date(data.returned_at).toISOString() : null,
+        note: data.note ? data.note : null,
+      })
+      .eq("id", data.id);
+    if (error) {
+      if (error.message.includes("loans_one_open_per_garment")) {
+        throw new Error("Dieses Kleidungsstück ist bereits offen verliehen.");
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export const deleteLoan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => idSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { error } = await context.supabase.from("loans").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
