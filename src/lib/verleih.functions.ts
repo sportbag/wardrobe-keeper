@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { translateGarmentError } from "@/lib/verleih.errors";
+import { assertAdmin } from "@/lib/verleih.server";
 import {
   garmentInputSchema,
   historyFilterSchema,
@@ -8,6 +9,7 @@ import {
   feePaymentSchema,
   importPersonsSchema,
   issueLoanSchema,
+  loanUpdateSchema,
   personInputSchema,
   type GarmentType,
 } from "@/lib/verleih.schemas";
@@ -447,17 +449,6 @@ export const getMyRole = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { isAdmin: (data ?? []).some((r) => r.role === "admin") };
   });
-
-async function assertAdmin(context: { supabase: SupabaseLike; userId: string }) {
-  const { data, error } = await context.supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", context.userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  if (!data) throw new Error("Nur Admins dürfen Buchungen ändern.");
-}
 
 export const updateLoan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
