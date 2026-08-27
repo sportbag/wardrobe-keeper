@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/verleih", label: "Ausgabe", icon: ArrowLeftRight },
+  { to: "/verleih", label: "Erfassung", icon: ArrowLeftRight },
   { to: "/uebersicht", label: "Wer hat was", icon: Warehouse },
   { to: "/kleidung", label: "Kleidung", icon: Shirt },
   { to: "/personen", label: "Personen", icon: Users },
