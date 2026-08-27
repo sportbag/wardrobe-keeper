@@ -1,5 +1,12 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getPersonDetail, listGarments, listLoans, listPersons } from "@/lib/verleih.functions";
+import {
+  getMyRole,
+  getPersonDetail,
+  listFeePayments,
+  listGarments,
+  listLoans,
+  listPersons,
+} from "@/lib/verleih.functions";
 import type { HistoryFilter } from "@/lib/verleih.schemas";
 
 export const personsQueryOptions = () =>
@@ -24,4 +31,16 @@ export const personDetailQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ["person-detail", id],
     queryFn: () => getPersonDetail({ data: { id } }),
+  });
+
+export const feePaymentsQueryOptions = () =>
+  queryOptions({
+    queryKey: ["fee-payments"],
+    queryFn: () => listFeePayments(),
+  });
+
+export const myRoleQueryOptions = () =>
+  queryOptions({
+    queryKey: ["my-role"],
+    queryFn: () => getMyRole(),
   });
