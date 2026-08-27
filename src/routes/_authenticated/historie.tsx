@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,7 +23,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { garmentsQueryOptions, loansQueryOptions, personsQueryOptions } from "@/lib/verleih.queries";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  garmentsQueryOptions,
+  loansQueryOptions,
+  myRoleQueryOptions,
+  personsQueryOptions,
+} from "@/lib/verleih.queries";
+import { deleteLoan, updateLoan, type LoanDTO } from "@/lib/verleih.functions";
 import { formatDate, formatDuration } from "@/lib/format";
 import { GARMENT_TYPE_LABEL, type GarmentType } from "@/lib/verleih.schemas";
 
@@ -55,6 +70,31 @@ export const Route = createFileRoute("/_authenticated/historie")({
 
 const ALL = "alle";
 
+type EditState = {
+  id: string;
+  person_id: string;
+  garment_id: string;
+  issued_at: string;
+  returned_at: string;
+  note: string;
+};
+
+const toLocalInput = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+const toEditState = (loan: LoanDTO): EditState => ({
+  id: loan.id,
+  person_id: loan.person_id,
+  garment_id: loan.garment_id,
+  issued_at: toLocalInput(loan.issued_at),
+  returned_at: toLocalInput(loan.returned_at),
+  note: loan.note ?? "",
+});
+
 function HistoriePage() {
   const { data: persons } = useSuspenseQuery(personsQueryOptions());
   const { data: garments } = useSuspenseQuery(garmentsQueryOptions());
@@ -76,6 +116,49 @@ function HistoriePage() {
   };
 
   const { data: loans = [], isFetching } = useQuery(loansQueryOptions(filter));
+  const { data: role } = useQuery(myRoleQueryOptions());
+  const isAdmin = role?.isAdmin === true;
+
+  const queryClient = useQueryClient();
+  const [edit, setEdit] = useState<EditState | null>(null);
+
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: ["loans"] });
+    void queryClient.invalidateQueries({ queryKey: ["garments"] });
+    void queryClient.invalidateQueries({ queryKey: ["persons"] });
+    void queryClient.invalidateQueries({ queryKey: ["person-detail"] });
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: (state: EditState) =>
+      updateLoan({
+        data: {
+          id: state.id,
+          person_id: state.person_id,
+          garment_id: state.garment_id,
+          issued_at: state.issued_at,
+          returned_at: state.returned_at,
+          note: state.note,
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Buchung aktualisiert");
+      setEdit(null);
+      invalidate();
+    },
+    onError: (error: Error) =>
+      toast.error("Änderung fehlgeschlagen", { description: error.message }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteLoan({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Buchung gelöscht");
+      setEdit(null);
+      invalidate();
+    },
+    onError: (error: Error) => toast.error("Löschen fehlgeschlagen", { description: error.message }),
+  });
 
   const reset = () => {
     setPersonId(ALL);
@@ -182,6 +265,7 @@ function HistoriePage() {
               <TableHead>Zurück</TableHead>
               <TableHead>Dauer</TableHead>
               <TableHead>Notiz</TableHead>
+              {isAdmin ? <TableHead className="text-right">Aktion</TableHead> : null}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -206,6 +290,13 @@ function HistoriePage() {
                 </TableCell>
                 <TableCell>{formatDuration(loan.issued_at, loan.returned_at)}</TableCell>
                 <TableCell className="text-muted-foreground">{loan.note ?? "—"}</TableCell>
+                {isAdmin ? (
+                  <TableCell className="text-right">
+                    <Button size="sm" variant="outline" onClick={() => setEdit(toEditState(loan))}>
+                      Bearbeiten
+                    </Button>
+                  </TableCell>
+                ) : null}
               </TableRow>
             ))}
           </TableBody>
@@ -233,6 +324,16 @@ function HistoriePage() {
                 {formatDuration(loan.issued_at, loan.returned_at)})
               </p>
               {loan.note ? <p className="text-xs text-muted-foreground">{loan.note}</p> : null}
+              {isAdmin ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => setEdit(toEditState(loan))}
+                >
+                  Bearbeiten
+                </Button>
+              ) : null}
             </CardContent>
           </Card>
         ))}
@@ -240,6 +341,105 @@ function HistoriePage() {
           <p className="text-sm text-muted-foreground">Keine Einträge gefunden.</p>
         ) : null}
       </div>
+
+      <Dialog open={edit !== null} onOpenChange={(open) => (open ? null : setEdit(null))}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Buchung bearbeiten</DialogTitle>
+            <DialogDescription>Nur Admins können Einträge der Historie anpassen.</DialogDescription>
+          </DialogHeader>
+          {edit ? (
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Person</Label>
+                <Select
+                  value={edit.person_id}
+                  onValueChange={(v) => setEdit({ ...edit, person_id: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {persons.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.full_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Kleidungsstück</Label>
+                <Select
+                  value={edit.garment_id}
+                  onValueChange={(v) => setEdit({ ...edit, garment_id: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {garments.map((g) => (
+                      <SelectItem key={g.id} value={g.id}>
+                        {g.code} · {GARMENT_TYPE_LABEL[g.type]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label className="text-xs" htmlFor="edit-issued">
+                    Ausgegeben am
+                  </Label>
+                  <Input
+                    id="edit-issued"
+                    type="datetime-local"
+                    value={edit.issued_at}
+                    onChange={(e) => setEdit({ ...edit, issued_at: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" htmlFor="edit-returned">
+                    Zurück am (leer = laufend)
+                  </Label>
+                  <Input
+                    id="edit-returned"
+                    type="datetime-local"
+                    value={edit.returned_at}
+                    onChange={(e) => setEdit({ ...edit, returned_at: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs" htmlFor="edit-note">
+                  Notiz
+                </Label>
+                <Input
+                  id="edit-note"
+                  value={edit.note}
+                  onChange={(e) => setEdit({ ...edit, note: e.target.value })}
+                />
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter className="gap-2 sm:justify-between">
+            <Button
+              variant="ghost"
+              className="text-destructive"
+              disabled={deleteMutation.isPending}
+              onClick={() => edit && deleteMutation.mutate(edit.id)}
+            >
+              Löschen
+            </Button>
+            <Button
+              disabled={!edit || !edit.issued_at || saveMutation.isPending}
+              onClick={() => edit && saveMutation.mutate(edit)}
+            >
+              {saveMutation.isPending ? "Wird gespeichert…" : "Speichern"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }
