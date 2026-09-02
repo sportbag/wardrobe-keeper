@@ -1,0 +1,11 @@
+node_modules
+.output
+dist
+.wrangler
+.git
+.lovable
+.env
+.env.*
+!.env.docker.example
+*.log
+/tmp
