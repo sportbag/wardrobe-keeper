@@ -58,10 +58,13 @@ export const inviteUser = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: invited, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
-      data: data.display_name ? { display_name: data.display_name } : undefined,
-      redirectTo: data.redirect_to ? data.redirect_to : undefined,
-    });
+    const options: { data?: object; redirectTo?: string } = {};
+    if (data.display_name) options.data = { display_name: data.display_name };
+    if (data.redirect_to) options.redirectTo = data.redirect_to;
+    const { data: invited, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+      data.email,
+      options,
+    );
     if (error) throw new Error(error.message);
 
     const userId = invited.user?.id;
