@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedBenutzerRouteImport } from './routes/_authenticated/benutzer'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedHistorieRouteImport } from './routes/_authenticated/historie'
 import { Route as AuthenticatedKleidungRouteImport } from './routes/_authenticated/kleidung'
@@ -33,6 +34,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedBenutzerRoute = AuthenticatedBenutzerRouteImport.update({
+  id: '/benutzer',
+  path: '/benutzer',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -74,6 +80,7 @@ const AuthenticatedPersonPersonIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/benutzer': typeof AuthenticatedBenutzerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/historie': typeof AuthenticatedHistorieRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/benutzer': typeof AuthenticatedBenutzerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/historie': typeof AuthenticatedHistorieRoute
   '/kleidung': typeof AuthenticatedKleidungRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/benutzer': typeof AuthenticatedBenutzerRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/historie': typeof AuthenticatedHistorieRoute
   '/_authenticated/kleidung': typeof AuthenticatedKleidungRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/benutzer'
     | '/dashboard'
     | '/historie'
     | '/kleidung'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/benutzer'
     | '/dashboard'
     | '/historie'
     | '/kleidung'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/benutzer'
     | '/_authenticated/dashboard'
     | '/_authenticated/historie'
     | '/_authenticated/kleidung'
@@ -171,6 +183,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/benutzer': {
+      id: '/_authenticated/benutzer'
+      path: '/benutzer'
+      fullPath: '/benutzer'
+      preLoaderRoute: typeof AuthenticatedBenutzerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -225,6 +244,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBenutzerRoute: typeof AuthenticatedBenutzerRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistorieRoute: typeof AuthenticatedHistorieRoute
   AuthenticatedKleidungRoute: typeof AuthenticatedKleidungRoute
@@ -235,6 +255,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBenutzerRoute: AuthenticatedBenutzerRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistorieRoute: AuthenticatedHistorieRoute,
   AuthenticatedKleidungRoute: AuthenticatedKleidungRoute,
