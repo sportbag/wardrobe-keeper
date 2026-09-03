@@ -70,7 +70,7 @@ function PaymentTimeline({
   payments: FeePaymentDTO[];
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex gap-2 pl-14 text-[10px] text-muted-foreground">
         {MONTHS.map((m, i) => (
           <span key={i} className="flex-1 text-center">
@@ -81,25 +81,27 @@ function PaymentTimeline({
       {years.map((year) => {
         const payment = payments.find((p) => p.year === year);
         return (
-          <div key={year} className="flex items-center gap-3">
-            <span className="w-11 shrink-0 text-sm font-medium tabular-nums">{year}</span>
-            <div className="relative h-6 flex-1 overflow-hidden rounded-md border border-border bg-muted/50">
-              {payment ? (
-                <>
-                  <div className="h-full w-full bg-success/25" />
-                  <div
-                    className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-background bg-success"
-                    style={{ left: `${yearFraction(payment.paid_on) * 100}%` }}
-                    title={`Gezahlt am ${formatDate(payment.paid_on)} · ${formatEuro(payment.amount)}`}
-                  />
-                </>
-              ) : null}
+          <div key={year} className="space-y-1">
+            <div className="flex items-center gap-3">
+              <span className="w-11 shrink-0 text-sm font-medium tabular-nums">{year}</span>
+              <div className="relative h-6 flex-1 overflow-hidden rounded-md border border-border bg-muted/50">
+                {payment ? (
+                  <>
+                    <div className="h-full w-full bg-success/25" />
+                    <div
+                      className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-background bg-success"
+                      style={{ left: `${yearFraction(payment.paid_on) * 100}%` }}
+                      title={`Gezahlt am ${formatDate(payment.paid_on)} · ${formatEuro(payment.amount)}`}
+                    />
+                  </>
+                ) : null}
+              </div>
             </div>
-            <span className="w-36 shrink-0 text-right text-xs text-muted-foreground">
+            <p className="pl-14 text-xs text-muted-foreground">
               {payment
-                ? `${formatDate(payment.paid_on)} · ${formatEuro(payment.amount)}`
+                ? `Gezahlt am ${formatDate(payment.paid_on)} · ${formatEuro(payment.amount)}`
                 : "offen"}
-            </span>
+            </p>
           </div>
         );
       })}
