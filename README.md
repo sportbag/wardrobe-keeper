@@ -22,3 +22,19 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Benutzerverwaltung & Administrator einrichten
+
+Zugänge werden unter **Benutzer** verwaltet. Nur Administratoren sehen diese Seite und können
+neue Benutzer per E-Mail einladen (`user_roles` mit den Rollen `admin` und `user`).
+
+Den **ersten Administrator** einmalig direkt in der Datenbank setzen:
+
+```sql
+insert into public.user_roles (user_id, role)
+select id, 'admin' from auth.users where email = 'admin@example.com'
+on conflict (user_id, role) do nothing;
+```
+
+Danach lädt dieser Admin alle weiteren Benutzer in der App ein und vergibt bzw. entzieht
+Adminrechte über den Rollen-Schalter. Die eigenen Adminrechte können nicht selbst entfernt werden.

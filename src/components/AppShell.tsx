@@ -7,6 +7,7 @@ import {
   LogOut,
   Shirt,
   Users,
+  UserCog,
   Warehouse,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -20,6 +21,7 @@ const NAV = [
   { to: "/kleidung", label: "Kleidung", icon: Shirt },
   { to: "/personen", label: "Personen", icon: Users },
   { to: "/historie", label: "Historie", icon: History },
+  { to: "/benutzer", label: "Benutzer", icon: UserCog },
 ] as const;
 
 export function AppShell({
@@ -106,7 +108,7 @@ export function AppShell({
         <main className="px-4 pb-28 pt-5 sm:px-6 lg:pb-12">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-border bg-card/95 backdrop-blur lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-border bg-card/95 backdrop-blur lg:hidden">
         {NAV.map((item) => (
           <Link
             key={item.to}
